@@ -1,5 +1,5 @@
 {
-  "name": "reactivate",
+  "name": "sitegen",
   "version": "0.0.0",
   "description": "Static site generator using React",
   "main": "index.js",
