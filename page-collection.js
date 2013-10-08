@@ -53,9 +53,9 @@ utils.assign(PageCollection.prototype, EventEmitter.prototype, {
   _readDir: function(filename) {
     var dataId = this._filenameToId(path.join(filename, 'index')),
         data = this.get(dataId, {fileOnly: true}),
-        children = fs.readdir(filename);
+        pages = fs.readdir(filename);
 
-    children = children.then(function(filenames) {
+    pages = pages.then(function(filenames) {
       return q.all(filenames
         .filter(function(fn) {
           return !fn.match(/^index\..+$/);
@@ -66,12 +66,12 @@ utils.assign(PageCollection.prototype, EventEmitter.prototype, {
         }.bind(this)));
     }.bind(this));
 
-    return q.all(data, children)
+    return q.all(data, pages)
       .then(function(result) {
         var data = result[0],
-            children = result[1];
+            pages = result[1];
 
-        return utils.assign({}, data, {children: children});
+        return utils.assign({}, data, {pages: pages});
       }.bind(this));
   },
 

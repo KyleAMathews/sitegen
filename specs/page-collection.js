@@ -14,8 +14,8 @@ describe('page-collection', function() {
         assertHasMetadata(page, true);
         assert.equal(page.metadata.title, 'index');
         assertHasContent(page, true);
-        assert.ok(page.children);
-        assert.equal(page.children.length, 3);
+        assert.ok(page.pages);
+        assert.equal(page.pages.length, 3);
         done();
       }).then(null, done);
   });
@@ -27,7 +27,7 @@ describe('page-collection', function() {
         assertHasMetadata(page, true);
         assert.equal(page.metadata.title, 'page');
         assertHasContent(page, true);
-        assert.ok(!page.children);
+        assert.ok(!page.pages);
         done();
       }).then(null, done);
   });
@@ -38,9 +38,9 @@ describe('page-collection', function() {
         assertPage(page, '/subdir');
         assertHasMetadata(page, false);
         assertHasContent(page, false);
-        assert.ok(page.children);
-        assert.equal(page.children.length, 1);
-        assert.equal(page.children[0].id, '/subdir/nested');
+        assert.ok(page.pages);
+        assert.equal(page.pages.length, 1);
+        assert.equal(page.pages[0].id, '/subdir/nested');
         done();
       }).then(null, done);
   });
@@ -52,7 +52,7 @@ describe('page-collection', function() {
         assertHasMetadata(page, true);
         assert.equal(page.metadata.title, 'nested');
         assertHasContent(page, true);
-        assert.ok(!page.children);
+        assert.ok(!page.pages);
         done();
       }).then(null, done);
   });
@@ -64,8 +64,8 @@ describe('page-collection', function() {
         assertHasMetadata(page, true);
         assert.equal(page.metadata.title, 'data');
         assertHasContent(page, true);
-        assert.ok(page.children);
-        assert.equal(page.children.length, 0);
+        assert.ok(page.pages);
+        assert.equal(page.pages.length, 0);
         done();
       }).then(null, done);
   });
