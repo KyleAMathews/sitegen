@@ -4,7 +4,7 @@ var path            = require('path'),
     callsite        = require('callsite'),
     express         = require('express'),
     ui              = require('react-app'),
-    PageCollection  = require('./page-collection');
+    pageCollection  = require('./page-collection');
 
 function promise(func) {
   return function(req, res, next) {
@@ -22,7 +22,7 @@ function uriToId(uri) {
 module.exports = function(opts) {
   var root = opts.root || path.dirname(callsite()[1].getFileName()),
       app = express(),
-      pages = new PageCollection({path: opts.path});
+      pages = pageCollection(opts.path, {watch: opts.debug});
 
   app.get('*.json', promise(function(req) {
     var id = uriToId(req.params[0]);

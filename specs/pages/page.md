@@ -1,0 +1,5 @@
+---
+title: page
+---
+
+some content

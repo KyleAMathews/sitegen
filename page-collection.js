@@ -1,109 +1,114 @@
-"use strict";
-
 var fs            = require('fs-promise'),
-    EventEmitter  = require('events').EventEmitter,
+    q             = require('kew'),
     path          = require('path'),
+    EventEmitter  = require('events').EventEmitter,
+    monocle       = require('monocle')(),
     utils         = require('lodash'),
-    markdown      = require('./markdown'),
-    q             = require('kew');
+    markdown      = require('./markdown');
 
-function PageCollection(opts) {
+function PageCollection(root, opts) {
+  opts = opts || {};
+
+  this.root = path.resolve(root);
   this.opts = opts;
+  this.processors = utils.assign({'.md': markdown}, opts.processors);
 
-  this.get = utils.memoize(this.get);
+  this._get = utils.memoize(this._get);
 
   if (this.opts.watch)
     this._startWatching();
 }
 
-PageCollection.prototype = {
+utils.assign(PageCollection.prototype, EventEmitter.prototype, {
 
   _startWatching: function() {
-
+    monocle.watchDirectory({
+      root: this.root,
+      listener: function(stats) {
+        this._get.cache = {};
+        this.emit('change', this._filenameToId(stats.name));
+      }.bind(this)
+    });
   },
 
-  _changed: function(f) {
-    f = '/' + path.relative(this.opts.path, f).replace(/\.md$/, '');
-    while (f !== '/') {
-      delete this.get.cache[CACHE_KEY + f];
-      this.emit('update', f);
-      f = path.dirname(f);
-    }
-    delete this.get.cache[CACHE_KEY + '/'];
-    this.emit('update', '/');
+  _filenameToId: function(filename) {
+    return '/' + path.relative(this.root, filename).replace(/\..+$/, '');
   },
 
-  _getDir: function(d) {
-    return this._resolveDir(d)
-      .then(function(fs) {
-        var promises = fs
-          .map(function(f) {
-            var id = '/' + path.relative(this.opts.path, f);
-            if (id.match(/\.md$/))
-              return this.get(id.replace(/\.md$/, ''))
-                .then(function(page) {
-                  return utils.pick(page, ['id', 'metadata']);
-                });
-            else
-              return {ref: id};
-          }.bind(this));
-        return q.all(promises)
-          .then(function(items) { return {pages: items.filter(Boolean)}; });
-      }.bind(this));
-  },
-
-  _getFile: function(f) {
-    return markdown(f)
-  },
-
-  _resolveDir: function(d) {
-    return fs.readdir(d).then(function(fs) {
-      fs.reverse();
-      var promises = fs
-        .map(function(f) {
-          f = path.join(d, f).replace(/\.md$/, '');
-          return this._resolve(f);
-        }.bind(this));
-      return q.all(promises)
-        .then(function(fs) { return fs.filter(Boolean); });
+  _read: function(filename, opts) {
+    return fs.stat(filename).then(function(stats) {
+      return stats.isDirectory()
+        ? this._readDir(filename)
+        : this._readFile(filename);
     }.bind(this));
   },
 
-  _resolve: function(f, _file) {
-    _file = _file || f.match(/\.md$/);
-    return fs.stat(f)
-      .then(
-        function(stat) {
-          if (stat.isDirectory()) return f
-          else if (_file) return f
-          else return null;
-        }.bind(this),
-        function(err) {
-          if (!_file && err.errno === 34) return this._resolve(f + '.md', true);
-          else if (err.errno === 34) return null;
-          else throw err;
-        }.bind(this)
-      );
+  _readFile: function(filename) {
+    var ext = path.extname(filename);
+    if (!this.processors[ext])
+      throw new Error("don't know how to process: " + filename);
+    return this.processors[ext](filename);
   },
 
-  get: function(id) {
-    var f = path.join(this.opts.path, id);
-    return this._resolve(f)
-      .then(function(f) {
-        if (f && f.match(/\.md$/)) return this._getFile(f)
-        else if (f) return this._getDir(f)
-        else return null;
+  _readDir: function(filename) {
+    var dataId = this._filenameToId(path.join(filename, 'index')),
+        data = this.get(dataId, {fileOnly: true}),
+        children = fs.readdir(filename);
+
+    children = children.then(function(filenames) {
+      return q.all(filenames
+        .filter(function(fn) {
+          return !fn.match(/^index\..+$/);
+        })
+        .map(function(fn) {
+          var id = this._filenameToId(path.join(filename, fn));
+          return this.get(id, {metadataOnly: true});
+        }.bind(this)));
+    }.bind(this));
+
+    return q.all(data, children)
+      .then(function(result) {
+        var data = result[0],
+            children = result[1];
+
+        return utils.assign({}, data, {children: children});
+      }.bind(this));
+  },
+
+  _get: function(id, opts) {
+    var filename = path.join(this.root, id),
+        dirname = path.dirname(filename),
+        basename = path.basename(filename);
+
+    return fs.readdir(dirname)
+      .then(function(files) {
+        for (var i = 0, len = files.length; i < len; i++) {
+          var f = files[i];
+          if (f.replace(/\.[^\.]+$/, '') === basename)
+            return this._read(path.join(dirname, f), opts);
+        }
       }.bind(this))
       .then(function(page) {
-        if (page) page.id = id;
+        if (page) {
+          page.id = id;
+          return page;
+        } else {
+          return null;
+        }
+      }.bind(this));
+  },
+
+  get: function(id, opts) {
+    opts = opts || {};
+    return this._get(id, opts).then(function(page) {
+      if (page && opts.metadataOnly)
+        return utils.pick(page, ['id', 'metadata'])
+      else
         return page;
-      });
+    }.bind(this));
   }
-};
-utils.assign(PageCollection.prototype, EventEmitter.prototype);
+});
 
-var _FUNC = utils.memoize(function() {});
-_FUNC('');
-var CACHE_KEY = Object.keys(_FUNC.cache)[0];
-
-module.exports = PageCollection;
+module.exports = function(root, opts) {
+  return new PageCollection(root, opts);
+}
