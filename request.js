@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(url, cb) {
+function xhr(url, cb) {
   var xhr = new global.XMLHttpRequest(),
       twoHundred = /^20\d$/;
 
@@ -24,3 +24,17 @@ module.exports = function(url, cb) {
   xhr.open('GET', url, true);
   xhr.send();
 }
+
+function getPageData(path, cb) {
+  var id = path.match(/\.html$/) ?
+    path.replace(/\.html$/, '.json') :
+    path[path.length - 1] === '/' ?
+      path + 'index.json' :
+      path + '.json';
+  return xhr(id, cb);
+}
+
+module.exports = {
+  xhr: xhr,
+  getPageData: getPageData
+};
