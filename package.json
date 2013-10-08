@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Static site generator using React",
   "main": "index.js",
+  "browser": "browser.js",
   "dependencies": {
     "express": "~3.4.0",
     "kew": "~0.2.2",
