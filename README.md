@@ -4,11 +4,10 @@
 
 You need several components to create your site with `sitegen`
 
-    % npm install sitegen react-app react-tools
+    % npm install sitegen react-tools
 
-This will installs `sitegen` package itself, `react-tools` package which
-provides React UI library and `react-app` which is a layer on top of React for
-creating SPAs.
+This will installs `sitegen` package itself and a `react-tools` package which
+provides React UI library in which you will define your pages.
 
 
 ## Usage
