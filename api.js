@@ -1,7 +1,7 @@
 "use strict";
 
 function xhr(url, cb) {
-  var xhr = new global.XMLHttpRequest(),
+  var xhr = new XMLHttpRequest(),
       twoHundred = /^20\d$/;
 
   xhr.onreadystatechange = function() {
