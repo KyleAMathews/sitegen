@@ -1,0 +1,30 @@
+{
+  "name": "reactivate",
+  "version": "0.0.0",
+  "description": "Static site generator using React",
+  "main": "index.js",
+  "dependencies": {
+    "express": "~3.4.0",
+    "kew": "~0.2.2",
+    "lodash": "~2.2.0",
+    "robotskirt": "~2.7.1",
+    "react-app": "git+https://github.com/andreypopp/react-app#dgraph",
+    "react-tools": "http://data.andreypopp.com/react-tools-0.5.0-alpha.tgz",
+    "fs-promise": "0.0.2",
+    "callsite": "~1.0.0"
+  },
+  "devDependencies": {
+    "semver": "~2.1.0",
+    "jshint": "~2.1.11",
+    "mocha": "~1.13.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "andreypopp/reactivate"
+  },
+  "author": "Andrey Popp <8mayday@gmail.com>",
+  "license": "MIT"
+}
