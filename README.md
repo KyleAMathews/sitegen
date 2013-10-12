@@ -35,9 +35,6 @@ Now as we specified, `./data` directory should contain our site's pages
 
 Now you should create `./ui/page.jsx` which define page UI:
 
-Now after running a server with `node ./index.js` you will be able to query your
-page's content with `curl http://localhost:3000/index.json` command.
-
     var React       = require('react-tools/build/modules/React'),
         SiteGen     = require('sitegen'),
 
@@ -61,3 +58,11 @@ page's content with `curl http://localhost:3000/index.json` command.
         );
       }
     });
+
+Now after running a server with `node ./index.js` you will be able to query your
+page's content with `curl http://localhost:3000/index.json` command and page
+itself with `curl http://localhost:3000/` command.
+
+But that's not really a static site yet, you should use `wget` to mirror
+`http://localhost:3000` into a directory.
+
