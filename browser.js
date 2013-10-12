@@ -6,8 +6,8 @@ var createPage = require('react-app/page'),
 module.exports = {
   createPage: function(spec) {
     if (!spec.getData)
-      spec.getData = function(props, callback) {
-        api.getPageData(props.path, callback);
+      spec.getData = function(callback) {
+        api.getPageData(this.props.request.path, callback);
       }
     return createPage(spec);
   },
