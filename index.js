@@ -29,7 +29,12 @@ module.exports = function(opts) {
     return pages.get(id);
   }));
 
-  app.use(ui(opts.routes, {debug: opts.debug, root: root}));
+  app.use(ui(opts.routes, {
+    transform: opts.transform,
+    pageOptions: opts.options,
+    debug: opts.debug,
+    root: root
+  }));
 
   return app;
 }
