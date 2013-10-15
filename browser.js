@@ -4,7 +4,14 @@ var ReactApp   = require('react-app'),
     api        = require('./api');
 
 module.exports = {
-  createSite: ReactApp.createApp,
+  createSite: function(spec) {
+    if (spec.routes)
+      return ReactApp.createApp(spec)
+    else
+      return ReactApp.createApp({
+        routes: {'*/': spec, '*.html': spec}
+      });
+  },
   createPage: function(spec) {
     if (!spec.getData)
       spec.getData = function(callback) {

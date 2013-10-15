@@ -19,7 +19,8 @@
     "semver": "~2.1.0",
     "jshint": "~2.1.11",
     "mocha": "~1.13.0",
-    "react-tools": "http://data.andreypopp.com/react-tools-0.5.0-alpha.tgz"
+    "react-tools": "http://data.andreypopp.com/react-tools-0.5.0-alpha.tgz",
+    "supertest": "~0.8.0"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec specs/*.js"

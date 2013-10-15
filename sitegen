@@ -14,13 +14,8 @@ if (!site)
 var dirname = path.dirname(site),
     site = path.basename(site);
 
-SiteGen({
-  site: site,
-  pages: argv.pages || dirname,
-  root: dirname,
-  transform: argv.transform,
-  debug: argv.debug
-}).listen(argv.port || 3000);
+argv.root = dirname;
+SiteGen(site, argv).listen(argv.port || 3000);
 
 function error(msg, code) {
   console.error('error:', msg);
