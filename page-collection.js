@@ -46,7 +46,7 @@ utils.assign(PageCollection.prototype, EventEmitter.prototype, {
   _readFile: function(filename) {
     var ext = path.extname(filename);
     if (!this.processors[ext])
-      throw new Error("don't know how to process: " + filename);
+      return null;
     return this.processors[ext](filename);
   },
 
@@ -56,7 +56,7 @@ utils.assign(PageCollection.prototype, EventEmitter.prototype, {
         pages = fs.readdir(filename);
 
     pages = pages.then(function(filenames) {
-      return q.all(filenames
+      var pages = q.all(filenames
         .filter(function(fn) {
           return !fn.match(/^index\..+$/);
         })
@@ -64,6 +64,7 @@ utils.assign(PageCollection.prototype, EventEmitter.prototype, {
           var id = this._filenameToId(path.join(filename, fn));
           return this.get(id, {metadataOnly: true});
         }.bind(this)));
+      return pages.then(function(pages) { return pages.filter(Boolean); });
     }.bind(this));
 
     return q.all(data, pages)

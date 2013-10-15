@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+var SiteGen   = require('./index'),
+    path      = require('path'),
+    optimist  = require('optimist')
+                  .boolean('debug');
+
+var argv = optimist.argv,
+    site = argv._[0];
+
+if (!site)
+  error('specify site definition via arguments');
+
+var dirname = path.dirname(site),
+    site = path.basename(site);
+
+SiteGen({
+  site: site,
+  pages: argv.pages || dirname,
+  root: dirname,
+  transform: argv.transform,
+  debug: argv.debug
+}).listen(argv.port || 3000);
+
+function error(msg, code) {
+  console.error('error:', msg);
+  process.exit(code || 1);
+}

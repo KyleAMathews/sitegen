@@ -29,9 +29,9 @@ module.exports = function(opts) {
     return pages.get(id);
   }));
 
-  app.use(ui(opts.routes, {
+  app.use(ui(opts.site, {
     transform: opts.transform,
-    pageOptions: opts.options,
+    options: opts.options,
     debug: opts.debug,
     root: root
   }));
