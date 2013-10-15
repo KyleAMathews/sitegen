@@ -87,6 +87,12 @@ describe('sitegen', function() {
           done();
         });
     });
+
+    it('returns 404 on non-existent page', function(done) {
+      supertest(app)
+        .get('/awesome_page.html')
+        .expect(404, done);
+    });
   });
 
   describe('api', function() {
@@ -141,6 +147,12 @@ describe('sitegen', function() {
           assert.equal(res.body.content, '<p>oops</p>');
           done();
         });
+    });
+
+    it('returns 404 on non-existent page', function(done) {
+      supertest(app)
+        .get('/awesome_page.json')
+        .expect(404, done);
     });
   });
 
