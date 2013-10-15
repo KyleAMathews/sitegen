@@ -1,13 +1,12 @@
 "use strict";
 
-var fs          = require('fs'),
-    robotskirt  = require('robotskirt'),
-    q           = require('kew');
+var fs        = require('fs'),
+    showdown  = require('showdown'),
+    q         = require('kew');
 
 function renderMarkdown(markdown) {
-  var renderer = new robotskirt.HtmlRenderer(),
-      parser = new robotskirt.Markdown(renderer);
-  return parser.render(markdown);
+  var conv = new showdown.converter();
+  return conv.makeHtml(markdown);
 }
 
 function parseMetadata(content) {

@@ -8,12 +8,12 @@
     "express": "~3.4.0",
     "kew": "~0.2.2",
     "lodash": "~2.2.0",
-    "robotskirt": "~2.7.1",
     "fs-promise": "0.0.2",
     "callsite": "~1.0.0",
     "react-app": "git+https://github.com/andreypopp/react-app#master",
     "monocle": "~1.1.50",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "showdown": "~0.3.1"
   },
   "devDependencies": {
     "semver": "~2.1.0",
