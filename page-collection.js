@@ -1,3 +1,5 @@
+"use strict";
+
 var fs            = require('fs-promise'),
     q             = require('kew'),
     path          = require('path'),
@@ -37,9 +39,8 @@ utils.assign(PageCollection.prototype, EventEmitter.prototype, {
 
   _read: function(filename, opts) {
     return fs.stat(filename).then(function(stats) {
-      return stats.isDirectory()
-        ? this._readDir(filename)
-        : this._readFile(filename);
+      return stats.isDirectory() ?
+        this._readDir(filename) : this._readFile(filename);
     }.bind(this));
   },
 

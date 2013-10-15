@@ -1,28 +1,28 @@
 "use strict";
 
 function xhr(url, cb) {
-  var xhr = new XMLHttpRequest(),
+  var request = new XMLHttpRequest(),
       twoHundred = /^20\d$/;
 
-  xhr.onreadystatechange = function() {
-    if (4 == xhr.readyState && 0 !== xhr.status) {
-      if (twoHundred.test(xhr.status)) {
+  request.onreadystatechange = function() {
+    if (4 == request.readyState && 0 !== request.status) {
+      if (twoHundred.test(request.status)) {
         var response;
         try {
-          response = JSON.parse(xhr.responseText);
+          response = JSON.parse(request.responseText);
         } catch (err) {
-          err.xhr = xhr;
+          err.request = request;
           return cb(err)
         }
         cb(null, response);
       } else {
-        cb(xhr, null);
+        cb(request, null);
       }
     }
   };
-  xhr.onerror = function(e) { return cb(e, null); };
-  xhr.open('GET', url, true);
-  xhr.send();
+  request.onerror = function(e) { return cb(e, null); };
+  request.open('GET', url, true);
+  request.send();
 }
 
 function getPageData(path, cb) {

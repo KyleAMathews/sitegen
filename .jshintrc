@@ -10,6 +10,7 @@
     "process": false,
     "module": false,
     "exports": false,
-    "global": false
+    "global": false,
+    "XMLHttpRequest": false
   }
 }
