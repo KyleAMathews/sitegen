@@ -1,6 +1,6 @@
 {
   "name": "sitegen",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Static site generator using React",
   "main": "index.js",
   "browser": "browser.js",
@@ -26,8 +26,17 @@
     "test": "./node_modules/.bin/mocha -R spec specs/*.js"
   },
   "keywords": [
-    "static", "site", "generator", "React", "single", "page", "app",
-    "commonjs", "dgraph", "dcompose", "react-app"
+    "static",
+    "site",
+    "generator",
+    "React",
+    "single",
+    "page",
+    "app",
+    "commonjs",
+    "dgraph",
+    "dcompose",
+    "react-app"
   ],
   "repository": {
     "type": "git",
