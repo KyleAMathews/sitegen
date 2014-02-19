@@ -23,7 +23,7 @@ function isPage(isPage, filename) {
   } else if (isPage instanceof RegExp) {
     return isPage.exec(filename);
   } else {
-    throw new TypeError("invalid opts.isPage: " + opts.isPage);
+    throw new TypeError("invalid options.isPage: " + options.isPage);
   }
 }
 
@@ -46,12 +46,17 @@ function urlFromFilename(basedir, filename) {
  * Return a list of pages for a directory.
  *
  * @param {String} basedir
- * @param {Object} opts
+ * @param {Object} options
  * @param {Callback} cb
  */
-var getPages = fibrous(function(basedir, opts) {
-  opts = opts || {};
-  var nodes = walkDirectory.sync(basedir, isPage.bind(null, opts.isPage));
+var getPages = fibrous(function(basedir, options) {
+  options = options || {};
+  var nodes = walkDirectory.sync(basedir, function(name, stat) {
+    var basename = path.basename(name);
+    return stat.isDirectory() ?
+      basename !== 'node_modules' && basename !== '.git' && basename !== 'build' :
+      isPage(options.isPage, name);
+  });
   return nodes.map(function(node) {
     return {
       filename: node.filename,

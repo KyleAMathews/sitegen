@@ -12,22 +12,23 @@ var utils   = require('lodash');
  * @param {Function} filter
  * @param {Callback} cb
  */
-var walkDirectory = fibrous(function(dirname, filter) {
+var walkDirectoryUsing = fibrous(function(fs, dirname, filter) {
   var stat = fs.sync.stat(dirname);
-
-  if (stat.isFile()) {
+  if (filter && !filter(dirname, stat)) {
+    return [];
+  } else if (stat.isFile()) {
     return [{filename: path.resolve(dirname), stat: stat}];
 
   } else if (stat.isDirectory()) {
-    var futures = fs.sync.readdir(dirname)
-      .filter(function(name) {
-        return filter(path.join(dirname, name), name);
-      })
-      .map(function(name) {
-        return walkDirectory(path.join(dirname, name), filter);
-      });
+    var futures = fs.sync.readdir(dirname).map(function(name) {
+      return walkDirectory.future(path.join(dirname, name), filter);
+    });
     return utils.flatten(fibrous.wait(futures));
   }
 });
 
+var walkDirectory = walkDirectoryUsing.bind(null, fs);
+
 module.exports = walkDirectory;
+module.exports.walkDirectory = walkDirectory;
+module.exports.walkDirectoryUsing = walkDirectoryUsing;

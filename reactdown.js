@@ -7,9 +7,8 @@ var reactTools  = require('react-tools');
 var runtime = require.resolve('./runtime');
 
 function compile(src) {
-  console.log('x');
   var compiled = marked(src);
-  var meta = compiled.meta;
+  var meta = compiled.meta || {};
 
   var wrapper = 'require("' + runtime + '").Wrapper';
   var component = meta.component ?
